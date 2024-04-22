@@ -87,12 +87,13 @@ if __name__ == "__main__":
     inp_file_path=sys.argv[-1]
     # phi, lam, h = geo.xyz2plh2(X, Y, Z)
     # print(phi, lam, h)
-    
+    inp_file_path = sys.argv[-1]
 
-coords_plh = []
-with open ('wsp_inp.txt') as f:
-    lines = f.readlines()
-    lines = lines[4:]
+    if '--xyz2plh' in sys.argv[-1]
+        coords_plh = []
+        with open ('wsp_inp.txt') as f:
+        lines = f.readlines()
+        lines = lines[4:]
     for line in lines:
         line = line.strip()
         x_str, y_str, z_str = line.split(',')
@@ -100,28 +101,28 @@ with open ('wsp_inp.txt') as f:
         p, l, h = geo.xyz2plh(x,y,z)
         coords_plh.append([p,l,h])
 
-with open('result_xyz2plh.txt', 'w') as f:
-    f.write('phi[deg],lam[phi],h[m]\n')
-    for coords in coords_plh:
+    with open('result_xyz2plh.txt', 'w') as f:
+        f.write('phi[deg],lam[phi],h[m]\n')
+        for coords in coords_plh:
         line = ','.join([str(coord) for coord in coords])
         f.write(line + '\n')
         
-coords_plh = []
-with open ('inp_file_path.txt') as f:
-    lines = f.readlines()
-    lines = lines[1:]
-    for line in lines:
-        line = line.strip()
-        phi_str, lam_str, h_str = line.split(',')
-        phi, lam, h =(float(phi_str), float(lam_str), float(h_str))
-        x, y, z = geo.xyz2plh(phi,lam,h)
-        coords_plh.append([x,y,z])
+        coords_plh = []
+        with open ('inp_file_path.txt') as f:
+            lines = f.readlines()
+            lines = lines[1:]
+            for line in lines:
+                line = line.strip()
+                phi_str, lam_str, h_str = line.split(',')
+                phi, lam, h =(float(phi_str), float(lam_str), float(h_str))
+                x, y, z = geo.xyz2plh(phi,lam,h)
+                coords_plh.append([x,y,z])
 
-with open('result_plh2xyz.txt', 'w') as f:
-    f.write('x[m],y[m],z[m]\n')
-    for coords in coords_plh:
-        line = ','.join([str(coord) for coord in coords])
-        f.write(line + '\n')
+    with open('result_plh2xyz.txt', 'w') as f:
+        f.write('x[m],y[m],z[m]\n')
+        for coords in coords_plh:
+            line = ','.join([str(coord) for coord in coords])
+            f.write(line + '\n')
         
 
         
