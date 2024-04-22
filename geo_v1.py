@@ -1,4 +1,5 @@
 from math import sin, cos, sqrt, atan, atan2, degrees, radians
+import sys
 
 o = object()
 
@@ -98,6 +99,24 @@ with open ('wsp_inp.txt') as f:
         coords_plh.append([p,l,h])
 
 with open('result_xyz2plh.txt', 'w') as f:
+    f.write('phi[deg],lam[phi],h[m]\n')
+    for coords in coords_plh:
+        line = ','.join([str(coord) for coord in coords])
+        f.write(line + '\n')
+        
+coords_plh = []
+with open ('result_xyz2plh.txt') as f:
+    lines = f.readlines()
+    lines = lines[1:]
+    for line in lines:
+        line = line.strip()
+        phi_str, lam_str, h_str = line.split(',')
+        phi, lam, h =(float(phi_str), float(lam_str), float(h_str))
+        x, y, z = geo.xyz2plh(phi,lam,h)
+        coords_plh.append([p,l,h])
+
+with open('result_plh2xyz.txt', 'w') as f:
+    f.write('x[m],y[m],z[m]\n')
     for coords in coords_plh:
         line = ','.join([str(coord) for coord in coords])
         f.write(line + '\n')
