@@ -75,9 +75,25 @@ class Transformacje:
             raise NotImplementedError(f"{output} - output format not defined")
             
 
-    def plh2xyz()
+    def plh2XYZ(self,phi,lam,h):
+        '''
+        Przeliczanie wspolrzednych prostokatnych na wspolrzedne geodezyjne
+        ----------
+        Parameters: h, f, l, a, e2 
+        ----------
+        Returns: X, Y, Z
 
-if __name__ == "__main__":
+        '''
+        
+       q=Rn*self.ecc2 *sin(phi)
+       x=(Rn+h)*cos(phi)*cos(lam)
+       y=(Rn+h)*cos(phi)*sin(lam)
+       z=(Rn+h)*sin(phi)-q
+       return(x, y, z)
+    
+        
+
+    if __name__ == "__main__":
     # utworzenie obiektu
     geo = Transformacje(model = "wgs84")
     # dane XYZ geocentryczne
@@ -89,38 +105,38 @@ if __name__ == "__main__":
     # print(phi, lam, h)
     inp_file_path = sys.argv[-1]
 
-    if '--xyz2plh' in sys.argv[-1]
+        if '--xyz2plh' in sys.argv[-1]
         coords_plh = []
         with open ('wsp_inp.txt') as f:
         lines = f.readlines()
         lines = lines[4:]
-    for line in lines:
+        for line in lines:
         line = line.strip()
         x_str, y_str, z_str = line.split(',')
         x, y, z =(float(x_str), float(y_str), float(z_str))
         p, l, h = geo.xyz2plh(x,y,z)
         coords_plh.append([p,l,h])
 
-    with open('result_xyz2plh.txt', 'w') as f:
+        with open('result_xyz2plh.txt', 'w') as f:
         f.write('phi[deg],lam[phi],h[m]\n')
         for coords in coords_plh:
         line = ','.join([str(coord) for coord in coords])
         f.write(line + '\n')
         
         coords_plh = []
-        with open ('inp_file_path.txt') as f:
+            with open ('inp_file_path.txt') as f:
             lines = f.readlines()
             lines = lines[1:]
-            for line in lines:
+                for line in lines:
                 line = line.strip()
                 phi_str, lam_str, h_str = line.split(',')
                 phi, lam, h =(float(phi_str), float(lam_str), float(h_str))
                 x, y, z = geo.xyz2plh(phi,lam,h)
                 coords_plh.append([x,y,z])
 
-    with open('result_plh2xyz.txt', 'w') as f:
+        with open('result_plh2xyz.txt', 'w') as f:
         f.write('x[m],y[m],z[m]\n')
-        for coords in coords_plh:
+            for coords in coords_plh:
             line = ','.join([str(coord) for coord in coords])
             f.write(line + '\n')
         
