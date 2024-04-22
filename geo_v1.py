@@ -75,7 +75,7 @@ class Transformacje:
             raise NotImplementedError(f"{output} - output format not defined")
             
 
-
+    def plh2xyz()
 
 if __name__ == "__main__":
     # utworzenie obiektu
@@ -84,9 +84,11 @@ if __name__ == "__main__":
     X = 3664940.500; Y = 1409153.590; Z = 5009571.170
     phi, lam, h = geo.xyz2plh(X, Y, Z)
     print(phi, lam, h)
+    inp_file_path=sys.argv[-1]
     # phi, lam, h = geo.xyz2plh2(X, Y, Z)
     # print(phi, lam, h)
     
+
 coords_plh = []
 with open ('wsp_inp.txt') as f:
     lines = f.readlines()
@@ -105,7 +107,7 @@ with open('result_xyz2plh.txt', 'w') as f:
         f.write(line + '\n')
         
 coords_plh = []
-with open ('result_xyz2plh.txt') as f:
+with open ('inp_file_path.txt') as f:
     lines = f.readlines()
     lines = lines[1:]
     for line in lines:
@@ -113,7 +115,7 @@ with open ('result_xyz2plh.txt') as f:
         phi_str, lam_str, h_str = line.split(',')
         phi, lam, h =(float(phi_str), float(lam_str), float(h_str))
         x, y, z = geo.xyz2plh(phi,lam,h)
-        coords_plh.append([p,l,h])
+        coords_plh.append([x,y,z])
 
 with open('result_plh2xyz.txt', 'w') as f:
     f.write('x[m],y[m],z[m]\n')
