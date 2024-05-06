@@ -76,14 +76,21 @@ class Transformacje:
             
 
     def plh2XYZ(self,phi,lam,h):
-        '''
-        Przeliczanie wspolrzednych prostokatnych na wspolrzedne geodezyjne
-        ----------
-        Parameters: h, f, l, a, e2 
-        ----------
-        Returns: X, Y, Z
+        """
+        Przeliczenie współrzędnych prostokątnych na współrzędne geodezyjne.
 
-        '''
+        Parameters
+        ----------
+        phi : float
+            DESCRIPTION. Szerokosc, [stopnie dziesietne]
+        lam : float
+            DESCRIPTION. Dlugosc, [stopnie dziesietne]
+        h : float
+            DESCRIPTION. Wysokosć, [metry]
+
+        Returns
+        X, Y, Z - float, współrzedne geodezyjne
+"""
         phi=radians(phi)
         lam=radians(lam)
         Rn=self.a/sqrt(1-self.ecc2*sin(phi)**2)
@@ -195,9 +202,6 @@ class Transformacje:
             result.append(X_rneu.T)
             
         return result
-    """
-    Tranformacja współrzędnych fi, lambda do układu 2000
-    """
     
     def sigma(self, f):
         A0 = 1 - self.ep2/4 - 3 * self.ep2**2/64 - 5 * self.ep2**3/256
@@ -208,6 +212,24 @@ class Transformacje:
         return(sig)
     
     def GK2000(self, f, l, m=0.999923):
+        """
+        Przeliczenie współrzędnych  do układu PL2000.
+
+        Parameters
+        ----------
+        f : float
+            DESCRIPTION. Szerokosc geograficzna.[stopnie dziesiętne]
+        l : float
+            DESCRIPTION. Długosc geograficzna. [stopnie dziesiętne]
+        m : float, optional
+            DESCRIPTION. The default is 0.999923. Skala odwzorowawcza. [bez jednostki]
+
+        Returns
+        -------
+        result : list
+            DESCRIPTION. Program zwraca listę zawierająca współrzędne X,Y w układzie PL2000.
+
+        """
         result = []
         for f, l in zip(f,l):
             l0 = 0 
@@ -239,11 +261,27 @@ class Transformacje:
         
         return result
     
-    """
-    Tranformacja współrzędnych fi, lambda do układu 1992
-    """
+    
     
     def GK1992(self, f, l, m = 0.9993):
+        """
+        Przeliczenie współrzędnych do układu PL1992.
+
+        Parameters
+        ----------
+        f : float
+            DESCRIPTION. Szerokosc geograficzna. [stopnie dziesiętne]
+        l : float
+            DESCRIPTION. Długosc geograficzna. [stopnie dziesiętne]
+        m : float, optional
+            DESCRIPTION. The default is 0.9993. Skala odwzorowawcza, [brak jednostki].
+
+        Returns
+        -------
+        result : list
+            DESCRIPTION. Zwraca listę zawierjącą współrzędne X,Y w układzie PL1992.
+
+        """
         result = []
         lam0 = (19*np.pi)/180
         for f, l in zip(f,l):
