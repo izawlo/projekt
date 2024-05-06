@@ -104,19 +104,32 @@ class Transformacje:
         enu = R.T @ xyz_t
         return enu
     
-  if __name__ == "__main__":
-    # utworzenie obiektu
-    geo = Transformacje(model = "wgs84")
-    print(sys.argv)
-    # dane XYZ geocentryczne
-    X = 3664940.500; Y = 1409153.590; Z = 5009571.170
-    phi, lam, h = geo.xyz2plh(X, Y, Z)
-    print(phi, lam, h)
-    inp_file_path=sys.argv[-1]
-    # phi, lam, h = geo.xyz2plh2(X, Y, Z)
-    # print(phi, lam, h)
-    inp_file_path = sys.argv[-1]
-
+    if __name__ == "__main__":
+        # utworzenie obiektu
+        geo = Transformacje(model = "wgs84")
+        print(sys.argv)
+        # dane XYZ geocentryczne
+        X = 3664940.500; Y = 1409153.590; Z = 5009571.170
+        phi, lam, h = geo.xyz2plh(X, Y, Z)
+        print(phi, lam, h)
+        inp_file_path=sys.argv[-1]
+        # phi, lam, h = geo.xyz2plh2(X, Y, Z)
+        # print(phi, lam, h)
+        inp_file_path = sys.argv[-1]
+        
+        # if '--xyz2plh' in sys.argv and '--plh2xyz' in sys.argv:
+        #     print('możesz podać tylko jednej flagę')
+        # elif '--xyz2plh' in sys.argv:
+        #     coords_plh=[]
+        #     with open(inp_file_path) as f:
+                
+        
+    
+    
+    
+    
+    
+    
         if '--xyz2plh' in sys.argv[-1]
         coords_plh = []
         with open ('wsp_inp.txt') as f:
@@ -135,7 +148,8 @@ class Transformacje:
         line = ','.join([str(coord) for coord in coords])
         f.write(line + '\n')
         
-        coords_plh = []
+        elif '--plh2xyz' in sys.argv:
+            coords_xyz=[]
             with open ('inp_file_path.txt') as f:
             lines = f.readlines()
             lines = lines[1:]
