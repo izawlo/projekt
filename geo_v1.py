@@ -93,10 +93,21 @@ class Transformacje:
         z=(Rn+h)*sin(phi)-q
         return(x, y, z)
     
-        
-    if __name__ == "__main__":
+    def xyz2neu(self, x, y, z, x_0, y_0, z_0):
+        phi, lam, h = [radians(coord) for coord in self.xyz2plh(x_0, y_0, z_0)]
+        R = np.array([[-sin(lam), -sin(phi)*cos(lam), cos(phi)*cos(lam)],
+                      [cos(lam), -sin(phi)*sin(lam), cos(phi)*sin(lam)],
+                      [0, cos(phi), sin(phi)]])
+        xyz_t = np.array([[x-x_0],
+                          [y-y_0],
+                          [z-z_0]])
+        enu = R.T @ xyz_t
+        return enu
+    
+  if __name__ == "__main__":
     # utworzenie obiektu
     geo = Transformacje(model = "wgs84")
+    print(sys.argv)
     # dane XYZ geocentryczne
     X = 3664940.500; Y = 1409153.590; Z = 5009571.170
     phi, lam, h = geo.xyz2plh(X, Y, Z)
