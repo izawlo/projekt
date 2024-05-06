@@ -16,8 +16,8 @@ class Transformacje:
         + Parametry planet: https://nssdc.gsfc.nasa.gov/planetary/factsheet/index.html
         """
         if model == "wgs84":
-            self.a = 6378137.0 # semimajor_axis
-            self.b = 6356752.31424518 # semiminor_axis
+            self.a = 6378137.0  # semimajor_axis
+            self.b = 6356752.31424518  # semiminor_axis
         elif model == "grs80":
             self.a = 6378137.0
             self.b = 6356752.31414036
@@ -27,8 +27,8 @@ class Transformacje:
         else:
             raise NotImplementedError(f"{model} model not implemented")
         self.flat = (self.a - self.b) / self.a
-        self.ecc = sqrt(2 * self.flat - self.flat ** 2) # eccentricity  WGS84:0.0818191910428 
-        self.ecc2 = (2 * self.flat - self.flat ** 2) # eccentricity**2
+        self.ecc = sqrt(2 * self.flat - self.flat ** 2)  # eccentricity  WGS84:0.0818191910428 
+        self.ecc2 = (2 * self.flat - self.flat ** 2)  # eccentricity**2
 
 
     
@@ -54,8 +54,8 @@ class Transformacje:
             dec_degree - decimal degree
             dms - degree, minutes, sec
         """
-        r   = sqrt(X**2 + Y**2)           # promień
-        lat_prev = atan(Z / (r * (1 - self.ecc2)))    # pierwsze przybliilizenie
+        r   = sqrt(X**2 + Y**2)  # promień
+        lat_prev = atan(Z / (r * (1 - self.ecc2)))  ○ # pierwsze przybliilizenie
         lat = 0
         while abs(lat_prev - lat) > 0.000001/206265:    
             lat_prev = lat
@@ -63,7 +63,7 @@ class Transformacje:
             h = r / cos(lat_prev) - N
             lat = atan((Z/r) * (((1 - self.ecc2 * N/(N + h))**(-1))))
         lon = atan(Y/X)
-        N = self.a / sqrt(1 - self.ecc2 * (sin(lat))**2);
+        N = self.a / sqrt(1 - self.ecc2 * (sin(lat))**2)
         h = r / cos(lat) - N       
         if output == "dec_degree":
             return degrees(lat), degrees(lon), h 
@@ -108,8 +108,8 @@ class Transformacje:
         xyz_t = np.array([[x-x_0],
                           [y-y_0],
                           [z-z_0]])
-        enu = R.T @ xyz_t
-        return enu
+        [[E],[N],[U]] = R.T @ xyz_t
+        return N,E,U
     
     if __name__ == "__main__":
         # utworzenie obiektu
