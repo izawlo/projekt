@@ -1,7 +1,8 @@
-from math import sin, cos, sqrt, atan, atan2, degrees, radians
+from math import sin, cos, sqrt, atan, atan2, degrees, radians, pi
 import sys
 import argparse
 import os
+import tkinter as tk
 
 
 o = object()
@@ -14,9 +15,7 @@ class Transformacje:
             b - mała półoś elipsoidy - promień południkowy
             flat - spłaszczenie
             ecc2 - mimośród^2
-        + WGS84: https://en.wikipedia.org/wiki/World_Geodetic_System#WGS84
-        + Inne powierzchnie odniesienia: https://en.wikibooks.org/wiki/PROJ.4#Spheroid
-        + Parametry planet: https://nssdc.gsfc.nasa.gov/planetary/factsheet/index.html
+        
         """
         if model == "wgs84":
             self.a = 6378137.0  # semimajor_axis
@@ -27,19 +26,39 @@ class Transformacje:
         elif model == "mars":
             self.a = 3396900.0
             self.b = 3376097.80585952
+        elif model == "Krasowski":
+            self.a = 6378245.000
+            self.e2 = 0.00669342162296
         else:
-            raise NotImplementedError(f"{model} model not implemented")
+            raise NotImplementedError(f"{model} Ta powierzchnia odniesienia jest nieobługiwana")
         self.flat = (self.a - self.b) / self.a
         self.ecc = sqrt(2 * self.flat - self.flat ** 2)  # eccentricity  WGS84:0.0818191910428 
         self.ecc2 = (2 * self.flat - self.flat ** 2)  # eccentricity**2
+        
+    def Np(self,f):
+        """
+        Obliczenie promienia przekroju w pierwszym wertykale
 
+        Parameters
+        ----------
+        f : FLOAT
+            Szerokosc geodezyjna,[radiany]
+
+        Returns
+        -------
+        N : FLOAT
+            Promień przekroju w pierwszym wertykale, [metry]
+
+        """
+        N=self.a/sqrt(1-self.ep2*sin(f)**2)
+        return N
 
     
     def xyz2plh(self, X, Y, Z, output = 'dec_degree'):
         """
         Algorytm Hirvonena - algorytm transformacji współrzędnych ortokartezjańskich (x, y, z)
         na współrzędne geodezyjne długość szerokość i wysokośc elipsoidalna (phi, lam, h). Jest to proces iteracyjny. 
-        W wyniku 3-4-krotneej iteracji wyznaczenia wsp. phi można przeliczyć współrzędne z dokładnoscią ok 1 cm.     
+        W wyniku 3-4-krotnej iteracji wyznaczenia wsp. phi można przeliczyć współrzędne z dokładnoscią ok 1 cm.     
         Parameters
         ----------
         X, Y, Z : FLOAT
@@ -58,7 +77,7 @@ class Transformacje:
             dms - degree, minutes, sec
         """
         r   = sqrt(X**2 + Y**2)  # promień
-        lat_prev = atan(Z / (r * (1 - self.ecc2)))  ○ # pierwsze przybliilizenie
+        lat_prev = atan(Z / (r * (1 - self.ecc2)))  # pierwsze przybliilizenie
         lat = 0
         while abs(lat_prev - lat) > 0.000001/206265:    
             lat_prev = lat
@@ -80,20 +99,22 @@ class Transformacje:
 
     def plh2XYZ(self,phi,lam,h):
         """
-        Przeliczenie współrzędnych prostokątnych na współrzędne geodezyjne.
+        Przeliczenie współrzędnych prostokątnych na współrzędne ortokartezjańskie.
 
         Parameters
         ----------
-        phi : float
-            DESCRIPTION. Szerokosc, [stopnie dziesietne]
-        lam : float
-            DESCRIPTION. Dlugosc, [stopnie dziesietne]
-        h : float
-            DESCRIPTION. Wysokosć, [metry]
+        phi : FLOAT
+            Szerokosc, [stopnie dziesietne]
+        lam : FLOAT
+            Dlugosc, [stopnie dziesietne]
+        h : FLOAT
+            Wysokosć, [metry]
 
         Returns
-        X, Y, Z - float, współrzedne geodezyjne
-"""
+        result: LIST
+        Lista zawierająca współrzędne ortokartezjańskie
+        """
+        result=[]
         phi=radians(phi)
         lam=radians(lam)
         Rn=self.a/sqrt(1-self.ecc2*sin(phi)**2)
@@ -101,9 +122,35 @@ class Transformacje:
         x=(Rn+h)*cos(phi)*cos(lam)
         y=(Rn+h)*cos(phi)*sin(lam)
         z=(Rn+h)*sin(phi)-q
-        return(x, y, z)
+        result.append([x, y, z])
+        return result 
     
     def xyz2neu(self, x, y, z, x_0, y_0, z_0):
+        '''
+        
+
+        Parameters
+        ----------
+        x : TYPE
+            DESCRIPTION.
+        y : TYPE
+            DESCRIPTION.
+        z : TYPE
+            DESCRIPTION.
+        x_0 : TYPE
+            DESCRIPTION.
+        y_0 : TYPE
+            DESCRIPTION.
+        z_0 : TYPE
+            DESCRIPTION.
+
+        Returns
+        -------
+        result : TYPE
+            DESCRIPTION.
+
+        '''
+        result=[]
         phi, lam, h = [radians(coord) for coord in self.xyz2plh(x_0, y_0, z_0)]
         R = np.array([[-sin(lam), -sin(phi)*cos(lam), cos(phi)*cos(lam)],
                       [cos(lam), -sin(phi)*sin(lam), cos(phi)*sin(lam)],
@@ -112,8 +159,9 @@ class Transformacje:
                           [y-y_0],
                           [z-z_0]])
         [[E],[N],[U]] = R.T @ xyz_t
-        return N,E,U
-    
+        result.append(R.T @ xyz_t)
+        return result
+    '''
     if __name__ == "__main__":
         # utworzenie obiektu
         geo = Transformacje(model = "wgs84")
@@ -175,36 +223,16 @@ class Transformacje:
             for coords in coords_plh:
             line = ','.join([str(coord) for coord in coords])
             f.write(line + '\n')
-            
+    '''
         
-    """Tranformacja współrzędnych geocentryczny do współrzędnych topocentrycznych"""
+    """Tranformacja współrzędnych geocentryczny do współrzędnych topocentrycznych
     def Rneu(self,f,l):
         R = np.array([[-np.sin(f)*np.cos(l), -np.sin(l), np.cos(f)*np.cos(l)],
                       [-np.sin(f)*np.sin(l), np.cos(l), np.cos(f)*np.sin(l)],
                       [np.cos(f), 0., np.sin(f)]])
         return(R)
-    def XYZ2NEU(self, X, Y, Z, X0, Y0, Z0):
-        result = []
-        p = np.sqrt(X0**2+Y0**2)
-        f = np.arctan(Z0/(p*(1-self.ep2)))
-        while True:
-            N =self.Np(f)
-            h=(p/np.cos(f))-N
-            fp=f
-            f=np.arctan(Z0/(p*(1-self.ep2*N/(N+h))))
-            if abs(fp-f)<(0.000001/206265):
-                break
-        l=np.arctan2(Y0,X0)
-        N = self.Np(f)
-        h = p / cos(f) - N
-        
-        R_neu = self.Rneu(f,l)
-        for X, Y, Z in zip(X, Y, Z):
-            X_sr = [X-X0, Y-Y0, Z-Z0] 
-            X_rneu = R_neu.T@X_sr
-            result.append(X_rneu.T)
-            
-        return result
+    """
+    
     
     def sigma(self, f):
         A0 = 1 - self.ep2/4 - 3 * self.ep2**2/64 - 5 * self.ep2**3/256
@@ -286,7 +314,7 @@ class Transformacje:
 
         """
         result = []
-        lam0 = (19*np.pi)/180
+        lam0 = radians(19)
         for f, l in zip(f,l):
             b2 = (self.a**2) * (1-self.ep2)   #krotsza polos
             e2p = ( self.a**2 - b2 ) / b2   #drugi mimosrod elipsy
