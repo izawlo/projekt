@@ -1,4 +1,4 @@
-from math import sin, cos, sqrt, atan, atan2, degrees, radians, pi
+from math import sin, cos, sqrt, atan, atan2, degrees, radians, pi, tan
 import sys
 import argparse
 import os
@@ -52,7 +52,26 @@ class Transformacje:
         """
         N=self.a/sqrt(1-self.ep2*sin(f)**2)
         return N
+  
+    def sigma(self, f):
+        """
+        
 
+        Parameters
+        ----------
+        f : FLOAT 
+            Szerokosc geodezyjna.
+
+        Returns
+        sig: FLOAT
+
+        """
+        A0 = 1 - self.ep2/4 - 3 * self.ep2**2/64 - 5 * self.ep2**3/256
+        A2 = (3/8) * (self.ep2 + self.ep2**2/4 + 15 * self.ep2**3/128)
+        A4 = (15/256) * (self.ep2**2 + 3 * self.ep2**3/4)
+        A6 = 35 * self.ep2**3/3072
+        sig = self.a * (A0 * f - A2 * sin(2 * f) + A4 * sin(4 * f) - A6 * sin(6 * f))
+        return(sig)
     
     def xyz2plh(self, X, Y, Z, output = 'dec_degree'):
         """
@@ -127,27 +146,16 @@ class Transformacje:
     
     def xyz2neu(self, x, y, z, x_0, y_0, z_0):
         '''
-        
+        Przeliczenie X,Y,Z na neu (układ współrzędnych horyzontaknych).
 
         Parameters
         ----------
-        x : TYPE
-            DESCRIPTION.
-        y : TYPE
-            DESCRIPTION.
-        z : TYPE
-            DESCRIPTION.
-        x_0 : TYPE
-            DESCRIPTION.
-        y_0 : TYPE
-            DESCRIPTION.
-        z_0 : TYPE
-            DESCRIPTION.
+        x, y, z, x_0, y_0, z_0: FLOAT [metry], współrzędne w układzie ortokartezjańskim          
 
         Returns
         -------
-        result : TYPE
-            DESCRIPTION.
+        result : LIST
+            Funkcja zwraca listę ze współrzędnymi horyzontalnymi.
 
         '''
         result=[]
@@ -234,14 +242,6 @@ class Transformacje:
     """
     
     
-    def sigma(self, f):
-        A0 = 1 - self.ep2/4 - 3 * self.ep2**2/64 - 5 * self.ep2**3/256
-        A2 = (3/8) * (self.ep2 + self.ep2**2/4 + 15 * self.ep2**3/128)
-        A4 = (15/256) * (self.ep2**2 + 3 * self.ep2**3/4)
-        A6 = 35 * self.ep2**3/3072
-        sig = self.a * (A0 * f - A2 * np.sin(2 * f) + A4 * np.sin(4 * f) - A6 * np.sin(6 * f))
-        return(sig)
-    
     def GK2000(self, f, l, m=0.999923):
         """
         Przeliczenie współrzędnych  do układu PL2000.
@@ -265,27 +265,27 @@ class Transformacje:
         for f, l in zip(f,l):
             l0 = 0 
             strefa = 0
-            if l >np.deg2rad(13.5) and l < np.deg2rad(16.5):
+            if l > radians(13.5) and l < radians(16.5):
                 strefa = 5
-                la0 = np.deg2rad(15)
-            elif l >np.deg2rad(16.5) and l < np.deg2rad(19.5):
+                l0 = radians(15)
+            elif l > radians(16.5) and l < radians(19.5):
                 strefa = 6
-                l0 = np.deg2rad(18)
-            elif l >np.deg2rad(19.5) and l < np.deg2rad(22.5):
+                l0 = radians(18)
+            elif l > radians(19.5) and l < radians(22.5):
                 strefa =7
-                l0 = np.deg2rad(21)
-            elif l >np.deg2rad(22.5) and l < np.deg2rad(25.5):
+                l0 = radians(21)
+            elif l > radians(22.5) and l < radians(25.5):
                 strefa = 8
-                l0 = np.deg2rad(24)
+                l0 = radians(24)
             b2 = (self.a**2) * (1-self.ep2)   #krotsza polos
             e2p = ( self.a**2 - b2 ) / b2   #drugi mimosrod elipsy
             dl = l - l0
-            t = np.tan(f)
-            ni = np.sqrt(e2p * (np.cos(f))**2)
+            t = tan(f)
+            ni = sqrt(e2p * (cos(f))**2)
             N = self.Np(f)
             sigma = self.sigma(f)
-            XGK20 = sigma + ((dl**2)/2)*N*np.sin(f)*np.cos(f) * ( 1 + ((dl**2)/12)*(np.cos(f))**2 * ( 5 - (t**2)+9*(ni**2) + 4*(ni**4)     )  + ((dl**4)/360)*(np.cos(f)**4) * (61-58*(t**2)+(t**4) + 270*(ni**2) - 330*(ni**2)*(t**2))  )
-            YGK20 = (dl*N* np.cos(f)) * (1+(((dl)**2/6)*(np.cos(f))**2) *(1-(t**2)+(ni**2))+((dl**4)/120)*(np.cos(f)**4)*(5-18*(t**2)+(t**4)+14*(ni**2)-58*(ni**2)*(t**2)) )
+            XGK20 = sigma + ((dl**2)/2)*N*sin(f)*cos(f) * ( 1 + ((dl**2)/12)*(cos(f))**2 * ( 5 - (t**2)+9*(ni**2) + 4*(ni**4)     )  + ((dl**4)/360)*(cos(f)**4) * (61-58*(t**2)+(t**4) + 270*(ni**2) - 330*(ni**2)*(t**2))  )
+            YGK20 = (dl*N* cos(f)) * (1+(((dl)**2/6)*(cos(f))**2) *(1-(t**2)+(ni**2))+((dl**4)/120)*(cos(f)**4)*(5-18*(t**2)+(t**4)+14*(ni**2)-58*(ni**2)*(t**2)) )
             X2000 = XGK20 * m 
             Y2000 = YGK20 * m + strefa*1000000 + 500000
             result.append([X2000, Y2000])
@@ -300,17 +300,17 @@ class Transformacje:
 
         Parameters
         ----------
-        f : float
-            DESCRIPTION. Szerokosc geograficzna. [stopnie dziesiętne]
-        l : float
-            DESCRIPTION. Długosc geograficzna. [stopnie dziesiętne]
-        m : float, optional
-            DESCRIPTION. The default is 0.9993. Skala odwzorowawcza, [brak jednostki].
+        f : FLOAT
+            Szerokosc geograficzna. [stopnie dziesiętne]
+        l : FLOAT
+            Długosc geograficzna. [stopnie dziesiętne]
+        m : FLOAT, optional
+            The default is 0.9993. Skala odwzorowawcza, [brak jednostki].
 
         Returns
         -------
-        result : list
-            DESCRIPTION. Zwraca listę zawierjącą współrzędne X,Y w układzie PL1992.
+        result : LIST
+            Zwraca listę zawierjącą współrzędne X,Y w układzie PL1992.
 
         """
         result = []
@@ -319,14 +319,14 @@ class Transformacje:
             b2 = (self.a**2) * (1-self.ep2)   #krotsza polos
             e2p = ( self.a**2 - b2 ) / b2   #drugi mimosrod elipsy
             dlam = l - lam0
-            t = np.tan(f)
-            ni = np.sqrt(e2p * (np.cos(f))**2)
+            t = tan(f)
+            ni = sqrt(e2p * (cos(f))**2)
             N = self.Np(f)
 
             sigma = self.sigma(f)
 
-            xgk = sigma + ((dlam**2)/2)*N*np.sin(f)*np.cos(f) * ( 1+ ((dlam**2)/12)*(np.cos(f))**2 * ( 5 - (t**2)+9*(ni**2) + 4*(ni**4)     )  + ((dlam**4)/360)*(np.cos(f)**4) * (61-58*(t**2)+(t**4) + 270*(ni**2) - 330*(ni**2)*(t**2))  )
-            ygk = (dlam*N* np.cos(f)) * (1+(((dlam)**2/6)*(np.cos(f))**2) *(1-(t**2)+(ni**2))+((dlam**4)/120)*(np.cos(f)**4)*(5-18*(t**2)+(t**4)+14*(ni**2)-58*(ni**2)*(t**2)) )
+            xgk = sigma + ((dlam**2)/2)*N*sin(f)*cos(f) * ( 1+ ((dlam**2)/12)*(cos(f))**2 * ( 5 - (t**2)+9*(ni**2) + 4*(ni**4)) + ((dlam**4)/360)*(cos(f)**4) * (61-58*(t**2)+(t**4) + 270*(ni**2) - 330*(ni**2)*(t**2)))
+            ygk = (dlam*N* cos(f)) * (1+(((dlam)**2/6)*(cos(f))**2) *(1-(t**2)+(ni**2))+((dlam**4)/120)*(cos(f)**4)*(5-18*(t**2)+(t**4)+14*(ni**2)-58*(ni**2)*(t**2)) )
             
             x92 = xgk*m - 5300000
             y92 = ygk*m + 500000
