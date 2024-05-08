@@ -1,9 +1,10 @@
 from math import sin, cos, sqrt, atan, atan2, degrees, radians, pi, tan
 import sys
-import argparse
+import argparse 
 import os
 import tkinter as tk
 from numpy import array as np
+
 
 o = object()
 
@@ -280,7 +281,7 @@ class Transformacje:
             np.savetxt(f"result_{transf}_{args.elip}.txt", result, delimiter=' ', fmt='%0.3f %0.3f')
 
 if __name__ == '__main__':
-    parser = ArgumentParser()
+    parser = ArgumentParse()
     parser.add_argument('-dane', type=str, help='Wpisz sciezke do pliku z danymi wejsciowymi')
     parser.add_argument('-elip', type=str, help='Wybierz elipsoide sposrod dostepnych: WRS84, GRS80, KRASOWSKI')
     parser.add_argument('-transf', type=str, help='Wybierz transformacje, z ktorej chcesz skorzystac, sposrod dostepnych: XYZ2flh, flh2XYZ, saz2neu, GK2000, GK1992, XYZ2NEU')
@@ -306,8 +307,8 @@ if __name__ == '__main__':
     finally:
         print("Mamy nadzieję, że nasz program był dla Ciebie użyteczny")
 
-
 #
+
 
         
 
