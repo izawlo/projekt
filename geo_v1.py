@@ -1,6 +1,7 @@
 from math import sin, cos, sqrt, atan, atan2, degrees, radians, pi, tan
 import sys
 import argparse 
+from argparse import ArgumentParser
 import os
 import tkinter as tk
 from numpy import array as np
@@ -283,7 +284,7 @@ class Transformacje:
 if __name__ == '__main__':
     parser = ArgumentParse()
     parser.add_argument('-dane', type=str, help='Wpisz sciezke do pliku z danymi wejsciowymi')
-    parser.add_argument('-elip', type=str, help='Wybierz elipsoide sposrod dostepnych: WRS84, GRS80, KRASOWSKI')
+    parser.add_argument('-elip',gt type=str, help='Wybierz elipsoide sposrod dostepnych: WGS84, GRS80, KRASOWSKI')
     parser.add_argument('-transf', type=str, help='Wybierz transformacje, z ktorej chcesz skorzystac, sposrod dostepnych: XYZ2flh, flh2XYZ, saz2neu, GK2000, GK1992, XYZ2NEU')
     args = parser.parse_args()
     elip = {'WGS84': [6378137.000, 0.00669438002290], 'GRS80': [6378137.000, 0.00669438002290], 'KRASOWSKI': [6378245.000, 0.00669342162296]}
@@ -307,7 +308,6 @@ if __name__ == '__main__':
     finally:
         print("Mamy nadzieję, że nasz program był dla Ciebie użyteczny")
 
-#
 
 
         
