@@ -379,97 +379,56 @@ class Transformacje:
     
     def zamiana_float2string_rad(self, liczba):
         '''
-        zamienia z float na str z dokładnocia taką jaką musi mieć jednostka radiany. 
-        Zrobione jest to po to żeby wynik się ładnie zapisywał w pliku wynikowym 
-
+        Zamienia liczbę zmiennoprzecinkową na string z dokładnością wymaganą dla jednostki radiany. 
+    
         Parameters
         ----------
-        liczba : FLOAT
+        liczba : float
             Liczba w radianach.
-
+    
         Returns
         -------
-        liczba : STR
-            string z okreloną stała iloscia znaków
-
+        liczbe : str
+            String z określoną stałą ilością znaków.
         '''
-        zm_liczba = "%.12f"%liczba
-        P = 16
-        xx = len(zm_liczba)
-        while xx < P:
-            zm_liczba = str(" ") + zm_liczba
-            xx += 1
-        return(zm_liczba)  
+        return "{:>16.12f}".format(liczba)
+
 
     
     def zamiana_float2string_fl(self, liczba):
         '''
-        zamienia z float na str z dokładnocia taką jaką musi mieć jednostka stopnie dziesiętne. 
-        Zrobione jest to po to żeby wynik się ładnie zapisywał w pliku wynikowym 
-
+        Zamienia liczbę zmiennoprzecinkową na string z dokładnością wymaganą dla jednostki stopni dziesiętnych. 
+    
         Parameters
         ----------
-        liczba : FLOAT
+        liczba : float
             Liczba w stopniach dziesiętnych.
-
+    
         Returns
         -------
-        liczba : STR
-            string z okreloną stała iloscia znaków
-
+        liczbe : str
+            String z określoną stałą ilością znaków.
         '''
-        zm_liczba = "%.10f"%liczba
-        P = 16
-        xx = len(zm_liczba)
-        while xx < P:
-            zm_liczba = str(" ") + zm_liczba
-            xx += 1
-        return(zm_liczba)        
+        return "{:>16.10f}".format(liczba)
+
     
     
     def zamiana_float2string(self, liczba):
         '''
-        zamienia z float na str z dokładnocia taką jaką musi mieć jednostka dms. 
-        Zrobione jest to po to żeby wynik się ładnie zapisywał w pliku wynikowym 
-
+        Zamienia liczbę zmiennoprzecinkową na string z dokładnością wymaganą dla jednostki dms. 
+    
         Parameters
         ----------
-        liczba : FLOAT
-            Liczba w dms.
-
+        liczba : float
+            Liczba w jednostce dms.
+    
         Returns
         -------
-        liczbe : STR
-            string z okreloną stała iloscia znaków
-
-
+        liczbe : str
+            String z określoną stałą ilością znaków.
         '''
-        zm_liczba = "%.3f"%liczba
-        P = 21
-        xx = len(zm_liczba)
-        while xx < P:
-            zm_liczba = str(" ") + zm_liczba
-            xx += 1
-        return(zm_liczba)
-    '''
-    def plik(self, file, transf):
-        dane = np.genfromtxt(file,delimiter = ',')
-        if transf == 'XYZ2FLH':
-            result  = self.XYZ2FLH(dane[:,0], dane[:,1], dane[:,2])
-            np.savetxt(f"result_{transf}_{args.elip}.txt", result, delimiter='', fmt='%0.10f %0.10f %0.3f')
-        elif transf == 'FLH2XYZ':
-            result  = self.FLH2XYZ(np.deg2rad((dane[:,0])), np.deg2rad(dane[:,1]), dane[:,2])
-            np.savetxt(f"result_{transf}_{args.elip}.txt", result, delimiter =' ', fmt ='%0.3f %0.3f %0.3f' )
-        elif transf == 'XYZ2NEU':
-            result  = self.XYZ2NEU(dane[1:,0], dane[1:,1], dane[1:,2], dane[0,0], dane[0,1], dane[0,2])
-            np.savetxt(f"result_{transf}_{args.elip}.txt", result, delimiter =' ', fmt ='%0.3f %0.3f %0.3f' )
-        elif transf == 'GK2000':
-            result  = self.GK2000(np.deg2rad(dane[:,0]), np.deg2rad(dane[:,1]))
-            np.savetxt(f"result_{transf}_{args.elip}.txt", result, delimiter=' ', fmt='%0.3f %0.3f')
-        elif transf == 'GK1992':
-            result  = self.GK1992(np.deg2rad(dane[:,0]), np.deg2rad(dane[:,1]))
-            np.savetxt(f"result_{transf}_{args.elip}.txt", result, delimiter=' ', fmt='%0.3f %0.3f')
-            '''            
+        return "{:>21.3f}".format(liczba)
+   
     def zapisanie_pliku(self, X, Y, Z, f, l, h, x92, y92, x00, y00, N, E, U, xyz_txt, neu_txt ): 
         '''
         funkcja zapisuje wyniki obliczeń (x, y, z, f, l, h, x92, y92, x1992, y1992, x2000, y2000 ,neu).
@@ -675,37 +634,10 @@ if __name__ == '__main__':
     print(f"Wyniki_z_flh2neu; n = {n}, e = {e}, u = {u}")
     print("Dziękujemy za skorzystanie z naszego programu")
      
+    
+    
+    
 
-    
-    
-    
-'''
-    parser = ArgumentParser()
-    parser.add_argument('-dane', type=str, help='Wpisz sciezke do pliku z danymi wejsciowymi')
-    parser.add_argument('-elip',type=str, help='Wybierz elipsoide sposrod dostepnych: WGS84, GRS80, KRASOWSKI')
-    parser.add_argument('-transf', type=str, help='Wybierz transformacje, z ktorej chcesz skorzystac, sposrod dostepnych: XYZ2flh, flh2XYZ, saz2neu, GK2000, GK1992, XYZ2NEU')
-    args = parser.parse_args()
-    elip = {'WGS84': [6378137.000, 0.00669438002290], 'GRS80': [6378137.000, 0.00669438002290], 'KRASOWSKI': [6378245.000, 0.00669342162296]}
-    transf = {'XYZ2FLH': 'XYZ2FLH', 'FLH2XYZ': 'FLH2XYZ','XYZ2NEU': 'XYZ2NEU', 'GK2000': 'GK2000', 'GK1992': 'GK1992'}
-'''
-'''   
-    try:
-        wsp = Transformacje(args.elip)
-        wczyt = wsp.plik(args.dane, transf[args.transf.upper()])
-        print("Utworzono plik ze wspolrzednymi.")
-    except AttributeError as e:
-        print("Error:", e)    
-    except FileNotFoundError:
-        print("Nie znaleziono podanego pliku")
-    except KeyError:
-        print("Niepoprawna nazwa Elipsoidy lub Transformacji")
-    except IndexError:
-        print("Dane w podanym pliku sa w nieodpowiednim formacie")
-    except ValueError:
-        print("Dane w podanym pliku sa w nieodpowiednim formacie")
-    finally:
-        print("Mamy nadzieję, że nasz program był dla Ciebie użyteczny")
-   '''     
 
     
 
