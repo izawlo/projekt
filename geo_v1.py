@@ -2,8 +2,6 @@ from math import sin, cos, sqrt, atan, atan2, degrees, radians, pi, tan
 import sys
 import argparse 
 from argparse import ArgumentParser
-import os
-import tkinter as tk
 import numpy as np
 
 
