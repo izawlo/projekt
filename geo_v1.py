@@ -194,15 +194,13 @@ class Transformacje:
     
     def xyz2neu(self, f, l, xa, ya, za, xb, yb, zb):
         '''
-        Układ współrzędnych horyzontalnych – układ współrzędnych astronomicznych, w którym oś główną stanowi 
-        lokalny kierunek pionu, a płaszczyzną podstawową jest płaszczyzna horyzontu astronomicznego. 
-        Biegunami układu są zenit i nadir. Ich położenie na sferze niebieskiej zależy od współrzędnych geograficznych 
+        Przeliczenie współrzędnych na układ współrżednych horyzontalnych. Ich położenie na sferze niebieskiej zależy od współrzędnych geograficznych 
         obserwatora oraz momentu obserwacji, tak więc współrzędne horyzontalne opisują jedynie chwilowe położenie ciała niebieskiego.
 
         Parametry
         ----------
         f : FLOAT
-            [stopnie dziesiętne] - szerokość geodezyjna..
+            [stopnie dziesiętne] - szerokość geodezyjna.
         l : FLOAT
             [stopnie dziesiętne] - długośc geodezyjna.
         XA, YA, ZA, XB, YB, ZB: FLOAT
@@ -210,8 +208,8 @@ class Transformacje:
 
         Returns
         -------
-        n , e, u : STR
-            współrzędne horyzontalne
+        n, e, u : STR
+            współrzędne w układzie horyzontalnym
             
 
         '''
@@ -262,9 +260,8 @@ class Transformacje:
     
     def flh2PL00(self, f, l):
         '''
-        Układ współrzędnych 2000 – układ współrzędnych płaskich prostokątnych zwany układem „2000”, 
-        powstały w wyniku zastosowania odwzorowania Gaussa-Krügera dla elipsoidy GRS 80 w czterech 
-        trzystopniowych strefach o południkach osiowych 15°E, 18°E, 21°E i 24°E, oznaczone odpowiednio numerami – 5, 6, 7 i 8.
+        Przliczenie na układ PL2000- układ współrzędnych płaskich prostokątnych, 
+        powstały w wyniku zastosowania odwzorowania Gaussa-Krügera dla elipsoidy GRS 80 w czterech strefach o południkach osiowych 15°E, 18°E, 21°E i 24°E, oznaczone odpowiednio numerami – 5, 6, 7 i 8.
 
         Parametry
         ----------
@@ -326,8 +323,8 @@ class Transformacje:
     
     def flh2PL92(self, f, l):
         '''
-        Układ współrzędnych 1992 (Państwowy Układ Współrzędnych Geodezyjnych 1992) – układ współrzędnych 
-        płaskich prostokątnych oparty na odwzorowaniu Gaussa-Krügera dla elipsoidy GRS80 w jednej dziesięciostopniowej strefie.
+        Przliczenie współrzędnych na układ PL1992- układ współrzędnych płaskich prostokątnych 
+        oparty na odwzorowaniu Gaussa-Krügera dla elipsoidy GRS80 w jednej dziesięciostopniowej strefie.
 
         Parametry
         ----------
