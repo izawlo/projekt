@@ -507,7 +507,7 @@ class Transformacje:
     
 
         
-    def wczytanie_zapisanie_pliku(self, Dane, output ='dms' , xyz_txt = 'Wyniki_transformacji_X_Y_Z_fi_lambda_h_x1992_y1992_x2000_y2000.txt', neu_txt = "Wyniki_transformacji_n_e_u.txt" ):
+    def wczytanie_zapisanie_pliku(self, Dane, output ='dms' , xyz_txt = 'Wyniki_transformacji.txt', neu_txt = "Wyniki_neu.txt" ):
         '''
         wczytanie i zapisanie pliku za pomocą jednej funkcji
 
