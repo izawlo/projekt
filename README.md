@@ -41,6 +41,12 @@ Wybór transformacji możliwy jest poprzez wpisanie:
 
 Natępnie przkazujemy parametry w kolejności, oznaczone nastepującymi flagami:
 -fa, -la, -ha, -fb, -lb, -hb
+*fa - szerokość geodezyjna punktu A
+*la - długość geodezyjna punktu A
+*ha - wysokość punktu A
+*fb - szerokość geodezyjna punktu B
+*lb - długość geodezyjna punktu B
+*hb - wysokość punktu B
 
 
 PRZYKŁADOWY POPRAWNY ZAPIS WYWOŁANIA:
