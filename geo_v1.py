@@ -424,9 +424,9 @@ class Transformacje:
         '''
         return "{:>21.3f}".format(liczba)
    
-    def zapisanie_pliku(self, X, Y, Z, f, l, h, x92, y92, x00, y00, N, E, U, xyz_txt, neu_txt ): 
+    def zapisanie_pliku_xyz2plh(self, X, Y, Z, f, l, h, N, E, U, xyz_txt, neu_txt ): 
         '''
-        funkcja zapisuje wyniki obliczeń (x, y, z, f, l, h, x92, y92, x1992, y1992, x2000, y2000 ,neu).
+        funkcja zapisuje wyniki obliczeń (x, y, z, f, l, h,neu).
         Tworzy z nich tabele.
 
         Parametry
@@ -439,10 +439,6 @@ class Transformacje:
              [dms] - długośc geodezyjna.
          h : LIST
              [metry] - wysokość elipsoidalna
-        X1992, Y1992 : LIST
-             [metry] - współrzędne w układzie 1992
-         X2000, Y2000 : LIST
-             [metry] - współrzędne w układzie 2000
         n, e, u : str
             współrzędne horyzontalne
 
@@ -474,7 +470,44 @@ class Transformacje:
             for n, e, u in zip(N, E, U):
                 plik1.write(f"|{n}|{e}|{u}|")
                 plik1.write(f"\n")
+    def zapisanie_pliku_plh220_92(self, X, Y, Z,f,l,h, x92, y92, x00, y00, xyz_txt): 
+        '''
+        funkcja zapisuje wyniki obliczeń (x, y, z, f, l, h, x92, y92, x1992, y1992, x2000, y2000 ,neu).
+        Tworzy z nich tabele.
+    
+        Parametry
+        ----------
+        X, Y, Z : LIST
+             [metry] - współrzędne w układzie orto-kartezjańskim, 
+         
+        X1992, Y1992 : LIST
+             [metry] - współrzędne w układzie 1992
+         X2000, Y2000 : LIST
+             [metry] - współrzędne w układzie 2000
+      
+    
+        Returns
+        -------
+        PLIK TXT
+    
+        '''
+        for i in range(len(X)):
+            X[i] = Transformacje.zamiana_float2string(self, X[i])
+            Y[i] = Transformacje.zamiana_float2string(self, Y[i])
+            Z[i] = Transformacje.zamiana_float2string(self, Z[i])
+        
+        with open(xyz_txt , "w",  encoding="utf-8") as plik:
+            plik.write(f"Wyniki_obliczen_Geodezyjnych; X, Y, Z, x1992, y1992, x2000, y2000.\n")
+            plik.write(f"          X                    Y                    Z                  x1992                y1992                x2000                y2000        ")
+            plik.write(f"\n")
+            for x, y, z, f, l, h, x92, y92, x00, y00 in zip(X, Y, Z, f, l, h, x92, y92, x00, y00):
+                plik.write(f"{x}{y}{z}{x92}{y92}{x00}{y00}")
+                plik.write(f"\n")
             
+        
+    
+            
+        
     def wczytanie_pliku(self, Dane):
         '''
         funkcja wczytuje plik z Danymi X, Y, Z i tworzy z nich liste posegregowanych X, Y i Z.
@@ -505,7 +538,7 @@ class Transformacje:
             ilosc_wierszy = len(X)
         return(X, Y, Z, ilosc_wierszy)
     
-    def wczytanie_zapisanie_pliku(self, Dane, output ='dms' , xyz_txt = 'Wyniki_transformacji.txt', neu_txt = "Wyniki_neu.txt" ):
+    def wczytanie_zapisanie_pliku_xyz2plh(self, Dane, output ='dms' , xyz_txt = 'Wyniki_transformacji_xyz2plh.txt', neu_txt = "Wyniki_neu.txt" ):
         '''
         wczytanie i zapisanie pliku za pomocą jednej funkcji
 
@@ -528,10 +561,6 @@ class Transformacje:
         F=[]
         L=[]
         H=[]
-        X92=[]
-        Y92=[]
-        X00=[]
-        Y00=[]
         N=[]
         E=[]
         U=[]
@@ -571,13 +600,74 @@ class Transformacje:
             i+=1
 
             
-        Transformacje.zapisanie_pliku(self, X, Y, Z, F, L, H, X92, Y92, X00, Y00, N, E, U, xyz_txt, neu_txt )
-     
-   
+        Transformacje.zapisanie_pliku_xyz2plh(self, X, Y, Z, F, L, H, N, E, U, xyz_txt, neu_txt )
+    def wczytanie_zapisanie_pliku_flh22000_92(self, Dane, output ='dms' , xyz_txt = 'Wyniki_transformacji_flh22000_92.txt'):
+        '''
+        wczytanie i zapisanie pliku za pomocą jednej funkcji
+    
+        Parameters
+        ----------
+        Dane : txt
+            Plik z danymi xyz.
+        output : str
+            sposób w jakiej ma zapisywać współrzędne f, l [dms, radiany, dec_degree] .
+        XYZ_txt: STR
+            nazwa pliku wynikowego na xyz, flh, PL1992, PL2000
+    
+        Returns
+        -------
+        Plik txt
+    
+        '''
+        X, Y, Z, C = Transformacje.wczytanie_pliku(self, Dane)
+        F=[]
+        L=[]
+        H=[]
+        X92=[]
+        Y92=[]
+        X00=[]
+        Y00=[]
+        for x, y, z in zip(X, Y, Z):
+            f,l,h = Transformacje.xyz2plh(self, x, y, z, output = output)
+            if output == "dms":
+                F.append(f)
+                L.append(l)
+            elif output == "radiany":
+                f=Transformacje.zamiana_float2string_rad(self,f)
+                l=Transformacje.zamiana_float2string_rad(self,l)
+                F.append(f)
+                L.append(l)
+            else:
+                f=Transformacje.zamiana_float2string_fl(self,f)
+                l=Transformacje.zamiana_float2string_fl(self,l)
+                F.append(f)
+                L.append(l)
+            H.append(Transformacje.zamiana_float2string(self, h))
+            f,l,h = Transformacje.xyz2plh(self, x, y, z)
+            
+            if l >= 13.5 and l <= 25.5 and f <= 55.0 and f >= 48.9:
+                x92, y92 = Transformacje.flh2PL92(self, f, l)
+                X92.append(Transformacje.zamiana_float2string(self, x92))
+                Y92.append(Transformacje.zamiana_float2string(self, y92))
+                x00, y00 = Transformacje.flh2PL00(self, f,l)
+                X00.append(Transformacje.zamiana_float2string(self, x00))
+                Y00.append(Transformacje.zamiana_float2string(self, y00))
+            else:
+                x92 = "         '-'         " ; X92.append(x92)
+                y92 = "         '-'         " ; Y92.append(y92)
+                x00 = "         '-'         " ; X00.append(x00)
+                y00 = "         '-'         " ; Y00.append(y00)
+        
+        
+    
+            
+        Transformacje.zapisanie_pliku_plh220_92(self, X, Y, Z, F,L,H, X92, Y92, X00, Y00, xyz_txt)    
+ 
 if __name__ == '__main__':
     
     prze = Transformacje("grs80")
-    prze.wczytanie_zapisanie_pliku("wsp_inp.txt")
+    prze.wczytanie_zapisanie_pliku_xyz2plh("wsp_inp.txt")
+    prze.wczytanie_zapisanie_pliku_flh22000_92("wsp_inp.txt")
     
     parser = ArgumentParser()
     parser.add_argument('-m', '--m', type=str, help="Podaj jedną z wskazanych elipsoid: GRS80, WGS84, Krasowski")
