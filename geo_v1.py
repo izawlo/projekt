@@ -457,11 +457,11 @@ class Transformacje:
             Z[i] = Transformacje.zamiana_float2string(self, Z[i])
         
         with open(xyz_txt , "w",  encoding="utf-8") as plik:
-            plik.write(f"Wyniki_obliczen_Geodezyjnych; X, Y, Z, fi, lambda, h, x1992, y1992, x2000, y2000.\n")
-            plik.write(f"|          X          |          Y          |          Z          |          fi         |        lambda       |          h          |        x1992        |        y1992        |        x2000        |        y2000        |")
+            plik.write(f"Wyniki_obliczen_Geodezyjnych; X, Y, Z, fi, lambda, h.\n")
+            plik.write(f"          X                    Y                    Z                    fi                 lambda                        h")
             plik.write(f"\n")
-            for x, y, z, f, l, h, x92, y92, x00, y00 in zip(X, Y, Z, f, l, h, x92, y92, x00, y00):
-                plik.write(f"|{x}|{y}|{z}|     {f}|     {l}|{h}|{x92}|{y92}|{x00}|{y00}|")
+            for x, y, z, f, l, h in zip(X, Y, Z, f, l, h):
+                plik.write(f"{x}{y}{z}     {f}   {l}{h}")
                 plik.write(f"\n")
             
         
@@ -505,8 +505,6 @@ class Transformacje:
             ilosc_wierszy = len(X)
         return(X, Y, Z, ilosc_wierszy)
     
-
-        
     def wczytanie_zapisanie_pliku(self, Dane, output ='dms' , xyz_txt = 'Wyniki_transformacji.txt', neu_txt = "Wyniki_neu.txt" ):
         '''
         wczytanie i zapisanie pliku za pomocą jednej funkcji
@@ -556,19 +554,7 @@ class Transformacje:
             H.append(Transformacje.zamiana_float2string(self, h))
             f,l,h = Transformacje.xyz2plh(self, x, y, z)
             
-            if l >= 13.5 and l <= 25.5 and f <= 55.0 and f >= 48.9:
-                x92, y92 = Transformacje.flh2PL92(self, f, l)
-                X92.append(Transformacje.zamiana_float2string(self, x92))
-                Y92.append(Transformacje.zamiana_float2string(self, y92))
-                x00, y00 = Transformacje.flh2PL00(self, f,l)
-                X00.append(Transformacje.zamiana_float2string(self, x00))
-                Y00.append(Transformacje.zamiana_float2string(self, y00))
-            else:
-                x92 = "         '-'         " ; X92.append(x92)
-                y92 = "         '-'         " ; Y92.append(y92)
-                x00 = "         '-'         " ; X00.append(x00)
-                y00 = "         '-'         " ; Y00.append(y00)
-        
+            
         f1, l1, h1 = Transformacje.xyz2plh(self, X[0], Y[0], Z[0])
         n1, e1, u1 = Transformacje.xyz2neu(self, f1, l1, X[0], Y[0], Z[0], X[-1], Y[-1], Z[-1])
         N.append(n1)
@@ -586,7 +572,8 @@ class Transformacje:
 
             
         Transformacje.zapisanie_pliku(self, X, Y, Z, F, L, H, X92, Y92, X00, Y00, N, E, U, xyz_txt, neu_txt )
-
+     
+   
 if __name__ == '__main__':
     
     prze = Transformacje("grs80")
