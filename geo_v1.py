@@ -321,7 +321,7 @@ class Transformacje:
     
     def flh2PL92(self, f, l):
         '''
-        Przliczenie współrzędnych na układ PL1992- układ współrzędnych płaskich prostokątnych 
+        Przeliczenie współrzędnych na układ PL1992- układ współrzędnych płaskich prostokątnych 
         oparty na odwzorowaniu Gaussa-Krügera dla elipsoidy GRS80 w jednej dziesięciostopniowej strefie.
 
         Parametry
@@ -426,7 +426,7 @@ class Transformacje:
    
     def zapisanie_pliku_xyz2plh(self, X, Y, Z, f, l, h, N, E, U, xyz_txt, neu_txt ): 
         '''
-        funkcja zapisuje wyniki obliczeń (x, y, z, f, l, h,neu).
+        Funkcja zapisuje wyniki obliczeń (x, y, z, f, l, h,neu).
         Tworzy z nich tabele.
 
         Parametry
@@ -472,7 +472,7 @@ class Transformacje:
                 plik1.write(f"\n")
     def zapisanie_pliku_plh220_92(self, X, Y, Z,f,l,h, x92, y92, x00, y00, xyz_txt): 
         '''
-        funkcja zapisuje wyniki obliczeń (x, y, z, f, l, h, x92, y92, x1992, y1992, x2000, y2000 ,neu).
+        Funkcja zapisuje wyniki obliczeń (x, y, z, f, l, h, x92, y92, x1992, y1992, x2000, y2000 ,neu).
         Tworzy z nich tabele.
     
         Parametry
@@ -510,7 +510,7 @@ class Transformacje:
         
     def wczytanie_pliku(self, Dane):
         '''
-        funkcja wczytuje plik z Danymi X, Y, Z i tworzy z nich liste posegregowanych X, Y i Z.
+        Funkcja wczytuje plik z danymi X, Y, Z i tworzy z nich liste posegregowanych X, Y i Z.
 
         
         Parametry
@@ -540,7 +540,7 @@ class Transformacje:
     
     def wczytanie_zapisanie_pliku_xyz2plh(self, Dane, output ='dms' , xyz_txt = 'Wyniki_transformacji_xyz2plh.txt', neu_txt = "Wyniki_neu.txt" ):
         '''
-        wczytanie i zapisanie pliku za pomocą jednej funkcji
+        Wczytanie i zapisanie pliku za pomocą jednej funkcji
 
         Parameters
         ----------
@@ -603,7 +603,7 @@ class Transformacje:
         Transformacje.zapisanie_pliku_xyz2plh(self, X, Y, Z, F, L, H, N, E, U, xyz_txt, neu_txt )
     def wczytanie_zapisanie_pliku_flh22000_92(self, Dane, output ='dms' , xyz_txt = 'Wyniki_transformacji_flh22000_92.txt'):
         '''
-        wczytanie i zapisanie pliku za pomocą jednej funkcji
+        Wczytanie i zapisanie pliku za pomocą jednej funkcji
     
         Parameters
         ----------
