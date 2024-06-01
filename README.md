@@ -28,7 +28,7 @@ Obsługa programu w terminalu:
 
 Program przyjmuje argumenty podane za pomocą następujących flag
 -m <nazwa_elipsoidy>: Nazwa modelu elipsoidy, na której chcemy dokonać transformacji
--neu <nazwa_transformacji>: Nazwa transformacji, którą chcemy wykonać
+-trans <nazwa_transformacji>: Nazwa transformacji, którą chcemy wykonać
 
 Wybór elipsoidy możliwy jest poprzez wpisanie jednej z poniższych nazw:
 'wgs84'
@@ -50,7 +50,7 @@ Natępnie przkazujemy parametry w kolejności, oznaczone nastepującymi flagami:
 
 
 PRZYKŁADOWY POPRAWNY ZAPIS WYWOŁANIA:
-python geo_v1.py -m grs80 -neu wynik.txt -fa 53 -la 67 -ha 54 -fb 56 -lb 68 -hb 115
+python geo_v1.py -m grs80 -trans neu wynik.txt -fa 53 -la 67 -ha 54 -fb 56 -lb 68 -hb 115
 
 Po wpisaniu poprawnie wyśtwiela się komunikat informujący nas o:
 -wybranej elipsoidzie 
