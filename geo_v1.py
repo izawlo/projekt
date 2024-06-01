@@ -671,7 +671,7 @@ if __name__ == '__main__':
     
     parser = ArgumentParser()
     parser.add_argument('-m', '--m', type=str, help="Podaj jedną z wskazanych elipsoid: GRS80, WGS84, Krasowski")
-    parser.add_argument('-neu', '--neu', type=str, help="Podaj nazwe pliku wynikiowego dla neu z rozszerzeniem txt")
+    parser.add_argument('-trans', '--trans', type=str, help="Podaj nazwe pliku wynikiowego dla neu z rozszerzeniem txt")
     parser.add_argument('-fa', '--fa', type=float)
     parser.add_argument('-la', '--la', type=float)
     parser.add_argument('-ha', '--ha', type=float)
