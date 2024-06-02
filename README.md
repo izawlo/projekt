@@ -52,7 +52,7 @@ Natępnie przkazujemy parametry w kolejności, oznaczone nastepującymi flagami:
 
 
 PRZYKŁADOWY POPRAWNY ZAPIS WYWOŁANIA:
-python geo_v1.py -m grs80 -trans neu wynik.txt -fa 53 -la 67 -ha 54 -fb 56 -lb 68 -hb 115
+python geo_v1.py -m grs80 -trans wynik.txt -fa 53 -la 67 -ha 54 -fb 56 -lb 68 -hb 115
 
 PRZYKŁADOWY PLIK WYNIKOWY:
 Wyniki_obliczen_Geodezyjnych; n, e, u.
