@@ -38,9 +38,6 @@ Wybór elipsoidy możliwy jest poprzez wpisanie jednej z poniższych nazw:
 'Krasowski'
 
 
-Wybór transformacji możliwy jest poprzez wpisanie:
-'neu'
-
 Natępnie przkazujemy parametry w kolejności, oznaczone nastepującymi flagami:
 -fa, -la, -ha, -fb, -lb, -hb
 *fa - szerokość geodezyjna punktu A
