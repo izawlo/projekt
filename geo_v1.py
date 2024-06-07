@@ -683,8 +683,78 @@ class Transformacje:
             
         
                 
-            Transformacje.zapisanie_pliku_plh220_92(self, X, Y, Z, F,L,H, X92, Y92, X00, Y00, xyz_txt)    
- 
+            Transformacje.zapisanie_pliku_plh220_92(self, X, Y, Z, F,L,H, X92, Y92, X00, Y00, xyz_txt)
+    def zapisanie_pliku_neu(self, N, E, U, neu_txt):
+  
+        try:
+            with open(neu_txt, 'w') as file:
+                for n, e, u in zip(N, E, U):
+                    file.write(f"{n},{e},{u}\n")
+            print(f"NEU coordinates saved to {neu_txt}")
+        except Exception as e:
+            print(f"Error writing NEU file: {e}")
+    def wczytanie_zapisanie_pliku_neu(self, Dane, output='dms', xyz_txt='Wyniki_transformacji_xyz2plh.txt', neu_txt='Wyniki_neu.txt'):
+        '''
+        Wczytanie i zapisanie pliku za pomocą jednej funkcji
+    
+        Parameters
+        ----------
+        Dane : str
+            Plik z danymi xyz.
+        output : str, optional
+            Sposób zapisu współrzędnych f, l [dms, radiany, dec_degree]. Default is 'dms'.
+        xyz_txt : str, optional
+            Nazwa pliku wynikowego na XYZ. Default is 'Wyniki_transformacji_xyz2plh.txt'.
+        neu_txt : str, optional
+            Nazwa pliku wynikowego na NEU. Default is 'Wyniki_neu.txt'.
+    
+        Returns
+        -------
+        None
+        '''
+    
+        X, Y, Z, C = Transformacje.wczytanie_pliku(self, Dane)
+        F = []
+        L = []
+        H = []
+        N = []
+        E = []
+        U = []
+    
+        for x, y, z in zip(X, Y, Z):
+            f, l, h = Transformacje.xyz2plh(self, x, y, z, output=output)
+            if output == "dms":
+                F.append(f)
+                L.append(l)
+            elif output == "radiany":
+                f = Transformacje.zamiana_float2string_rad(self, f)
+                l = Transformacje.zamiana_float2string_rad(self, l)
+                F.append(f)
+                L.append(l)
+            else:
+                f = Transformacje.zamiana_float2string_fl(self, f)
+                l = Transformacje.zamiana_float2string_fl(self, l)
+                F.append(f)
+                L.append(l)
+            H.append(Transformacje.zamiana_float2string(self, h))
+            f, l, h = Transformacje.xyz2plh(self, x, y, z)
+    
+        f1, l1, h1 = Transformacje.xyz2plh(self, X[0], Y[0], Z[0])
+        n1, e1, u1 = Transformacje.xyz2neu(self, f1, l1, X[0], Y[0], Z[0], X[-1], Y[-1], Z[-1])
+        N.append(n1)
+        E.append(e1)
+        U.append(u1)
+    
+        i = 0
+        while i < (C - 1):
+            f, l, h = Transformacje.xyz2plh(self, X[i], Y[i], Z[i])
+            n, e, u = Transformacje.xyz2neu(self, f, l, X[i], Y[i], Z[i], X[i + 1], Y[i + 1], Z[i + 1])
+            N.append(n)
+            E.append(e)
+            U.append(u)
+            i += 1
+    
+        Transformacje.zapisanie_pliku_neu(self, N, E, U, neu_txt)
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-m', '--m', type=str, required=True, help="Podaj jedną z wskazanych elipsoid: GRS80, WGS84, Krasowski")
@@ -699,11 +769,11 @@ if __name__ == '__main__':
     elif args.trans == 'flh22000_92':
         prze.wczytanie_zapisanie_pliku_flh22000_92(args.input)
     elif args.trans == 'neu':
-        prze.transformuj_neu(args.input)
+        prze.wczytanie_zapisanie_pliku_neu(args.input)
     else:
         print("Niepoprawna transformacja. Wybierz jedną z: xyz2plh, flh22000_92, neu.")
     
-    
+    print("Dziękujemy za skorzystanie z naszego programu")
     
 
 
