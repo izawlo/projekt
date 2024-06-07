@@ -615,23 +615,21 @@ class Transformacje:
 
             
         Transformacje.zapisanie_pliku_xyz2plh(self, X, Y, Z, F, L, H, N, E, U, xyz_txt, neu_txt )
-    def wczytanie_zapisanie_pliku_flh22000_92(self, Dane, output='dms', xyz_txt='Wyniki_transformacji_flh22000_92.txt'):
+    def wczytanie_zapisanie_pliku_flh22000_92(self, Dane, xyz_txt='Wyniki_transformacji_flh22000_92.txt'):
         '''
-    Wczytanie i zapisanie pliku za pomocą jednej funkcji
-
-    Parameters
-    ----------
-    Dane : txt
-        Plik z danymi xyz.
-    output : str
-        sposób w jakiej ma zapisywać współrzędne f, l [dms, radiany, dec_degree] .
-    XYZ_txt: STR
-        nazwa pliku wynikowego na xyz, flh, PL1992, PL2000
-
-    Returns
-    -------
-    Plik txt
-    '''
+        Wczytanie i zapisanie pliku za pomocą jednej funkcji
+    
+        Parameters
+        ----------
+        Dane : txt
+            Plik z danymi xyz.
+        xyz_txt: str
+            nazwa pliku wynikowego na xyz, flh, PL1992, PL2000
+    
+        Returns
+        -------
+        None
+        '''
         X, Y, Z, C = Transformacje.wczytanie_pliku(self, Dane)
         F = []
         L = []
@@ -640,46 +638,33 @@ class Transformacje:
         Y92 = []
         X00 = []
         Y00 = []
-        
     
         for x, y, z in zip(X, Y, Z):
-            f, l, h = Transformacje.xyz2plh(self, x, y, z, output=output)
-            
-            if output == "dms":
-                F.append(f)
-                L.append(l)
-            elif output == "radiany":
-                f = Transformacje.zamiana_float2string_rad(self, f)
-                l = Transformacje.zamiana_float2string_rad(self, l)
-                F.append(f)
-                L.append(l)
-            else:
-                f = Transformacje.zamiana_float2string_fl(self, f)
-                l = Transformacje.zamiana_float2string_fl(self, l)
-                F.append(f)
-                L.append(l)
-            
-            H.append(Transformacje.zamiana_float2string(self, h))
-           
-            if 13.5 <= l <= 25.5 and 48.9 <= f <= 55.0:
+            f, l, h = Transformacje.xyz2plh(self, x, y, z)
+    
+            F.append(f)
+            L.append(l)
+            H.append(h)
+    
+            if 13.5 <= float(l) <= 25.5 and 48.9 <= float(f) <= 55.0:
                 x92, y92 = Transformacje.flh2PL92(self, f, l)
-                X92.append(Transformacje.zamiana_float2string(self, x92))
-                Y92.append(Transformacje.zamiana_float2string(self, y92))
+                X92.append(x92)
+                Y92.append(y92)
                 x00, y00 = Transformacje.flh2PL00(self, f, l)
-                X00.append(Transformacje.zamiana_float2string(self, x00))
-                Y00.append(Transformacje.zamiana_float2string(self, y00))
+                X00.append(x00)
+                Y00.append(y00)
             else:
                 X92.append("-")
                 Y92.append("-")
                 X00.append("-")
                 Y00.append("-")
-        
+    
         with open(xyz_txt, "w", encoding="utf-8") as plik:
             plik.write("Wyniki transformacji flh22000_92:\n")
             plik.write("F, L, H, X92, Y92, X00, Y00\n")
             for f_, l_, h_, x92_, y92_, x00_, y00_ in zip(F, L, H, X92, Y92, X00, Y00):
                 plik.write(f"{f_}, {l_}, {h_}, {x92_}, {y92_}, {x00_}, {y00_}\n")
-            
+                
             
         
                 
