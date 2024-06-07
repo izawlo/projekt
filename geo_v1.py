@@ -515,10 +515,10 @@ class Transformacje:
             Z.append(self.zamiana_float2string(z))
         
         with open(output_file, "w", encoding="utf-8") as plik:
-            plik.write("Wyniki_obliczen_Geodezyjnych; X, Y, Z\n")
-            plik.write("X, Y, Z\n")
+            plik.write("Wyniki transformacji plh2xyz:\n")
+            plik.write("X[m], Y[m], Z[m]\n")
             for x, y, z in zip(X, Y, Z):
-                plik.write(f"{x} {y} {z}\n")  
+                plik.write(f"{x}, {y}, {z}\n") 
     
             
         
@@ -675,9 +675,9 @@ class Transformacje:
             with open(neu_txt, 'w') as file:
                 for n, e, u in zip(N, E, U):
                     file.write(f"{n},{e},{u}\n")
-            print(f"NEU coordinates saved to {neu_txt}")
+            print(f"Plik ze współrzędnymi neu został zapisany {neu_txt}")
         except Exception as e:
-            print(f"Error writing NEU file: {e}")
+            print(f"Error : {e}")
     def wczytanie_zapisanie_pliku_neu(self, Dane, output='dms', xyz_txt='Wyniki_transformacji_xyz2plh.txt', neu_txt='Wyniki_neu.txt'):
         '''
         Wczytanie i zapisanie pliku za pomocą jednej funkcji
@@ -740,6 +740,37 @@ class Transformacje:
             i += 1
     
         Transformacje.zapisanie_pliku_neu(self, N, E, U, neu_txt)
+        
+        
+    def wczytanie_zapisanie_pliku_plh2xyz(self, Dane, output='dms', xyz_txt='Wyniki_transformacji_plh2xyz.txt'):
+        '''
+        Wczytanie i zapisanie pliku za pomocą jednej funkcji
+        
+        Parameters
+        ----------
+        Dane : txt
+            Plik z danymi PLH.
+        output : str, optional
+            Sposób zapisu współrzędnych XYZ [dms, radiany, dec_degree].
+        xyz_txt: str, optional
+            Nazwa pliku wynikowego na xyz, flh, PL1992, PL2000
+            
+        Returns
+        -------
+        None
+        '''
+        F, L, H, C = Transformacje.wczytanie_pliku(self, Dane)
+        X = []
+        Y = []
+        Z = []
+        
+        for f, l, h in zip(F, L, H):
+            x, y, z = self.plh2XYZ(f, l, h)
+            X.append(x)
+            Y.append(y)
+            Z.append(z)
+        
+        self.zapisanie_pliku_plh2xyz(X, Y, Z, xyz_txt)
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-m', '--m', type=str, required=True, help="Podaj jedną z wskazanych elipsoid: GRS80, WGS84, Krasowski")
@@ -755,6 +786,8 @@ if __name__ == '__main__':
         prze.wczytanie_zapisanie_pliku_flh22000_92(args.input)
     elif args.trans == 'neu':
         prze.wczytanie_zapisanie_pliku_neu(args.input)
+    elif args.trans == 'plh2xyz':
+        prze.wczytanie_zapisanie_pliku_plh2xyz(args.input)
     else:
         print("Niepoprawna transformacja. Wybierz jedną z: xyz2plh, flh22000_92, neu.")
     
