@@ -100,7 +100,7 @@ class Transformacje:
         """
         N=self.a/sqrt(1-self.ecc2*sin(f)**2)
         return N
-  
+  N
     def sigma(self, f):
         """
         
@@ -181,15 +181,14 @@ class Transformacje:
         result: LIST
         Lista zawierająca współrzędne ortokartezjańskie
         """
-        phi=radians(phi)
-        lam=radians(lam)
-        Rn=self.a/sqrt(1-self.ecc2*sin(phi)**2)
-        q=Rn*self.ecc2 *sin(phi)
-        x=(Rn+h)*cos(phi)*cos(lam)
-        y=(Rn+h)*cos(phi)*sin(lam)
-        z=(Rn+h)*sin(phi)-q
-        return x,y,z
-    
+        
+        f=np.radians(phi)
+        l=np.radians(lam)
+        N = Transformacje.Np(self, phi)
+        X = (N + h) * np.cos(phi) * np.cos(lam)
+        Y = (N + h) * np.cos(phi) * np.sin(lam)
+        Z = (N * (1 - self.ecc2) + h) * np.sin(phi)
+        return(X,Y,Z)
     
     
     def xyz2neu(self, f, l, xa, ya, za, xb, yb, zb):
@@ -213,32 +212,18 @@ class Transformacje:
             
 
         '''
-        dX = Transformacje.dXYZ(self, xa, ya, za, xb, yb, zb)
-        R = np.array([[-np.sin(f)*np.cos(l), -np.sin(l), np.cos(f)*np.cos(l)],
-                      [-np.sin(f)*np.sin(l),  np.cos(l), np.cos(f)*np.sin(l)],
-                      [np.cos(f),             0,         np.sin(f)          ]])
-        neu = R.T @ dX
-        n = neu[0];   e = neu[1];   u = neu[2]
-        n = "%.16f"%n; e = "%.16f"%e; u="%.16f"%u
-        dlugosc = []
-        xx = len(n); dlugosc.append(xx)
-        yy = len(e); dlugosc.append(yy)
-        zz = len(u); dlugosc.append(zz)
-        P = 50
-        
-        while xx < P:
-            n = str(" ") + n
-            xx += 1
-        
-        while yy < P:
-            e = str(" ") + e
-            yy += 1
-            
-        while zz < P:
-            u = str(" ") + u
-            zz +=1
-            
-        return(n, e, u)
+        dX = xb - xa
+        dY = yb - ya
+        dZ = zb - za
+
+        f, l, _ = self.xyz2plh(xa, ya, za)
+
+        R = np.array([[-np.sin(f) * np.cos(l), -np.sin(l), np.cos(f) * np.cos(l)],
+                      [-np.sin(f) * np.sin(l), np.cos(l), np.cos(f) * np.sin(l)],
+                      [np.cos(f), 0, np.sin(f)]])
+
+        neu = R @ np.array([dX, dY, dZ])
+        return tuple(neu)
     
     def dXYZ(self, xa, ya, za, xb, yb, zb):
         '''
@@ -258,7 +243,7 @@ class Transformacje:
         dXYZ = np.array([xb-xa, yb-ya, zb-za])
         return(dXYZ)
     
-    def flh2PL00(self, f, l):
+    def flh2PL00(self, f, l, m=0.999923):
         '''
         Przliczenie na układ PL2000- układ współrzędnych płaskich prostokątnych, 
         powstały w wyniku zastosowania odwzorowania Gaussa-Krügera dla elipsoidy GRS 80 w czterech strefach o południkach osiowych 15°E, 18°E, 21°E i 24°E, oznaczone odpowiednio numerami – 5, 6, 7 i 8.
@@ -290,12 +275,12 @@ class Transformacje:
         
         if f > 55 or f < 48.9:
             raise NotImplementedError(f"{Transformacje.dms(self, np.radians(f))} ten równoleżnik nie jest obsługiwany przez układ współrzędnych płaskich PL2000")
-            
+        
         f = np.radians(f)
         l = np.radians(l)
         a2 = self.a**2
         b2 = a2 * (1 - self.ecc2)
-        e_2 = (a2 - b2)/b2
+        e_2 = (a2 - b2) / b2
         dl = l - l0
         dl2 = dl**2
         dl4 = dl**4
@@ -318,10 +303,11 @@ class Transformacje:
         x00 = xgk * 0.999923
         y00 = ygk * 0.999923 + strefa * 1000000 + 500000
         return(x00,y00)
+
     
     
     
-    def flh2PL92(self, f, l):
+    def flh2PL92(self, f, l, m = 0.9993):
         '''
         Przeliczenie współrzędnych na układ PL1992- układ współrzędnych płaskich prostokątnych 
         oparty na odwzorowaniu Gaussa-Krügera dla elipsoidy GRS80 w jednej dziesięciostopniowej strefie.
@@ -339,18 +325,18 @@ class Transformacje:
               [metry] - współrzędne w układzie 1992
 
         '''
-        
+                
         if l > 25.5 or l < 13.5:
             raise NotImplementedError(f"{Transformacje.dms(self, np.radians(l))} ten południk nie jest obsługiwany przez układ współrzędnych płaskich PL1992")
-            
+        
         if f > 55 or f < 48.9:
             raise NotImplementedError(f"{Transformacje.dms(self, np.radians(f))} ten równoleżnik nie jest obsługiwany przez układ współrzędnych płaskich PL1992")
-            
+        
         f = np.radians(f)
         l = np.radians(l)
         a2 = self.a**2
         b2 = a2 * (1 - self.ecc2)
-        e_2 = (a2 - b2)/b2
+        e_2 = (a2 - b2) / b2
         l0 = np.radians(19)
         dl = l - l0
         dl2 = dl**2
@@ -372,7 +358,8 @@ class Transformacje:
         ygk = dl * N * np.cos(f) * (1 + (dl2/6) * (np.cos(f)**2) * (1 - t2 + n2) + (dl4/120) * (np.cos(f)**4) * (5 - (18 * t2) + t4 + (14 * n2) - 58 * n2 * t2))
         x92 = xgk * 0.9993 - 5300000
         y92 = ygk * 0.9993 + 500000
-        return(x92,y92)
+        return (x92, y92)
+
     
     def zamiana_float2string_rad(self, liczba):
         '''
