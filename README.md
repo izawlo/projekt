@@ -39,6 +39,7 @@ Po fladze -trans wpisujemy jedną z poniższych nazw (transformacje, która chce
 'neu'
 'flh22000_92'
 'plh2xyz'
+Transformacja neu traktuje ostatni punkt w pliku tekstowym xyz.txt jako środek układu neu.
 
 
 PRZYKŁADOWY POPRAWNY ZAPIS WYWOŁANIA:
@@ -56,4 +57,4 @@ Dla każdej transformacji zapisywany jest plik tekstowy z wynikami.
 ZNANE BŁĘDY
 - Zawarte w kodzie transformacje nie działają, gdy użytkownik próbuje wykonać je na elipsoidzie Krasowskiego.
 - Wykonanie transformacji xyz2plh zapisuje plik z odpowiednimi wynikami oraz dodatkowo wyniki transformacji dla neu.
-- Program działa tylko na wczytywanie pliku wsp_inp.txt
+- Program działa tylko na wczytywanie pliku wsp_inp.txt oraz blh.txt 
