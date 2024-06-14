@@ -3,7 +3,7 @@ import sys
 import argparse 
 from argparse import ArgumentParser
 import numpy as np
-
+from pprint import pprint
 
 
 o = object()
@@ -100,7 +100,7 @@ class Transformacje:
         """
         N=self.a/sqrt(1-self.ecc2*sin(f)**2)
         return N
-  N
+  
     def sigma(self, f):
         """
         
@@ -184,10 +184,10 @@ class Transformacje:
         
         f=np.radians(phi)
         l=np.radians(lam)
-        N = Transformacje.Np(self, phi)
-        X = (N + h) * np.cos(phi) * np.cos(lam)
-        Y = (N + h) * np.cos(phi) * np.sin(lam)
-        Z = (N * (1 - self.ecc2) + h) * np.sin(phi)
+        N = Transformacje.Np(self, f)
+        X = (N + h) * np.cos(f) * np.cos(l)
+        Y = (N + h) * np.cos(f) * np.sin(l)
+        Z = (N * (1 - self.ecc2) + h) * np.sin(f)
         return(X,Y,Z)
     
     
@@ -496,10 +496,10 @@ class Transformacje:
     def zapisanie_pliku_plh2xyz(self, phi, lam, h, output_file):
         X, Y, Z = [], [], []
         for p, l, h_ in zip(phi, lam, h):
-            x, y, z = self.plh2XYZ(p, l, h_)
-            X.append(self.zamiana_float2string(x))
-            Y.append(self.zamiana_float2string(y))
-            Z.append(self.zamiana_float2string(z))
+            # x, y, z = self.plh2XYZ(p, l, h_)
+            X.append(self.zamiana_float2string(p))
+            Y.append(self.zamiana_float2string(l))
+            Z.append(self.zamiana_float2string(h_))
         
         with open(output_file, "w", encoding="utf-8") as plik:
             plik.write("Wyniki transformacji plh2xyz:\n")
@@ -539,7 +539,7 @@ class Transformacje:
             ilosc_wierszy = len(X)
         return(X, Y, Z, ilosc_wierszy)
     
-    def wczytanie_zapisanie_pliku_xyz2plh(self, Dane, output ='dms' , xyz_txt = 'Wyniki_transformacji_xyz2plh.txt', neu_txt = "Wyniki_neu.txt" ):
+    def wczytanie_zapisanie_pliku_xyz2plh(self, Dane, output ='dec_degree' , xyz_txt = 'Wyniki_transformacji_xyz2plh.txt', neu_txt = "Wyniki_neu.txt" ):
         '''
         Wczytanie i zapisanie pliku za pomocą jednej funkcji
 
@@ -627,7 +627,7 @@ class Transformacje:
         Y00 = []
     
         for x, y, z in zip(X, Y, Z):
-            f, l, h = Transformacje.xyz2plh(self, x, y, z)
+            f, l, h = x, y, z
     
             F.append(f)
             L.append(l)
@@ -751,11 +751,15 @@ class Transformacje:
         Y = []
         Z = []
         
+        pprint(list(zip(F,L,H)))
+        
         for f, l, h in zip(F, L, H):
             x, y, z = self.plh2XYZ(f, l, h)
             X.append(x)
             Y.append(y)
             Z.append(z)
+        
+        pprint(list(zip(X,Y,Z)))
         
         self.zapisanie_pliku_plh2xyz(X, Y, Z, xyz_txt)
 if __name__ == '__main__':
